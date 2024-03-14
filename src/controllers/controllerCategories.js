@@ -2,6 +2,10 @@ const {
     Categories,
   } = require('../database/models');
 
+const {
+    CATEGORY_TYPE
+  } = require('../helpers/constant')
+
 class controllerUser{    
     static async getCategory(req,res,next){
         try {
@@ -9,9 +13,9 @@ class controllerUser{
 
 
             if (categoryType === 'income') {
-                return Categories.findAll({ where: { category_type: 1 } });
+                return Categories.findAll({ where: { category_type: CATEGORY_TYPE.INCOME } });
             } else  if (categoryType === 'outcome') {
-                return Categories.findAll({ where: { category_type: 2 } });
+                return Categories.findAll({ where: { category_type: CATEGORY_TYPE.EXPENSE } });
             }
     
             return []
