@@ -20,6 +20,7 @@ jobs:
           ./google-cloud-sdk/install.sh --quiet
           echo "${{ vars.GCLOUD_AUTH }}" > /tmp/gcloud.json
           printf "${{ vars.GCLOUD_AUTH }}"
+          cat /tmp/gcloud.json
           ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/tmp/gcloud.json
           ./google-cloud-sdk/bin/gcloud config set project cdtest-406103
 
