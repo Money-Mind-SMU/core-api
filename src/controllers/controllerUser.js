@@ -32,45 +32,30 @@ class controllerUser{
     }
 
 
-    static googleLogin(req,res,next){
+    static async googleLogin(req,res,next){
       const {token} = req.body
-      client.verifyIdToken({
-          idToken : token,
-          audience : process.env.GOOGLE_CLIENT_ID
+      const ticket = await client.verifyIdToken({
+        idToken : token,
+        audience : process.env.GOOGLE_CLIENT_ID
+     })
+     const payload = ticket.getPayload();
+
+     // find existing user in database
+     let existingUser = await User.findOne({
+        user_email : payload.email
       })
-      .then(ticket =>{
-          const payload = ticket.getPayload();
-          User.findOne({
-              user_email : payload.email
-          })
-          .then(user=>{
-              if(user){
-                  console.log('data exist in db')
-                  const {name,email,_id} = user
-                  return {name,email,_id}
-              }else{
-                  console.log('creating new user')
-                  const {name,email} = payload
-                  User.create({
-                      user_name: name,
-                      user_email: email,
-                  })
-                  .then(data=>{
-                      const {name,email,_id} = data
-                      return {name,email,_id}
-                  })
-                 
-              }
-          })
-          .then(data=>{
-              let tokenCreated = jwt.generateToken(data)
-              req.headers.token = tokenCreated
-              res.json(req.headers.token)
-              console.log(req.headers.token);
-          })
-          
-      })
-      .catch(err=>next(err))
+
+      if (!existingUser) {
+        // if new user sign up
+        await User.create({
+          user_name: payload.name,
+          user_email: payload.email,
+       })
+      }
+
+      const tokenCreated = jwt.generateToken(data)
+      req.headers.token = tokenCreated
+      res.json(req.headers.token)
   }
 
 }
