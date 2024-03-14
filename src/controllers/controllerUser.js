@@ -1,4 +1,6 @@
 const jwt = require('../helpers/jwt')
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const {
     User,
   } = require('../database/models');
@@ -28,6 +30,48 @@ class controllerUser{
             return res.status(500).json({ error: 'Internal Server Error' });
           }
     }
+
+
+    static googleLogin(req,res,next){
+      const {token} = req.body
+      client.verifyIdToken({
+          idToken : token,
+          audience : process.env.GOOGLE_CLIENT_ID
+      })
+      .then(ticket =>{
+          const payload = ticket.getPayload();
+          User.findOne({
+              user_email : payload.email
+          })
+          .then(user=>{
+              if(user){
+                  console.log('data exist in db')
+                  const {name,email,_id} = user
+                  return {name,email,_id}
+              }else{
+                  console.log('creating new user')
+                  const {name,email} = payload
+                  User.create({
+                      user_name: name,
+                      user_email: email,
+                  })
+                  .then(data=>{
+                      const {name,email,_id} = data
+                      return {name,email,_id}
+                  })
+                 
+              }
+          })
+          .then(data=>{
+              let tokenCreated = jwt.generateToken(data)
+              req.headers.token = tokenCreated
+              res.json(req.headers.token)
+              console.log(req.headers.token);
+          })
+          
+      })
+      .catch(err=>next(err))
+  }
 
 }
 
