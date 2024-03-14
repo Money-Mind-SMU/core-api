@@ -19,7 +19,8 @@ jobs:
           tar -xf google-cloud-sdk.tar.gz
           ./google-cloud-sdk/install.sh --quiet
           echo "${{ vars.GCLOUD_AUTH }}" > /tmp/gcloud.json
-          printf "${{ vars.GCLOUD_AUTH }}"
+          echo ${{ secrets.GCLOUD_AUTH}} | base64 -d >  /tmp/gcloud.json
+          printf /tmp/gcloud.json
           cat /tmp/gcloud.json
           ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/tmp/gcloud.json
           ./google-cloud-sdk/bin/gcloud config set project cdtest-406103
