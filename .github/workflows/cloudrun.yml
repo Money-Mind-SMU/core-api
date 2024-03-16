@@ -24,19 +24,11 @@ jobs:
         run: |
           docker build -t nodejs-sample-image .
 
-     # - name: Configure Docker and push image
-      #  run: |
-       #   gcloud auth configure-docker --quiet # Use `gcloud` directly, as it's now in PATH
-        #  docker tag nodejs-sample-image gcr.io/cdtest-406103/nodejs-sample-image
-         # docker push gcr.io/cdtest-406103/nodejs-sample-image
-
-
-       - name: Configure Docker and push image
+      - name: Configure Docker and push image
         run: |
-          ./google-cloud-sdk/bin/gcloud auth configure-docker
+          gcloud auth configure-docker --quiet # Use `gcloud` directly, as it's now in PATH
           docker tag nodejs-sample-image gcr.io/cdtest-406103/nodejs-sample-image
           docker push gcr.io/cdtest-406103/nodejs-sample-image
-
 
       - name: Deploy to Google Cloud Run
         run: |
