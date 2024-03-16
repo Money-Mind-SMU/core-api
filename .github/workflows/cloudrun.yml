@@ -11,19 +11,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # Updated to v3
 
       - name: Set up Google Cloud SDK
-        run: |
-          curl -o google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-372.0.0-linux-x86_64.tar.gz
-          tar -xf google-cloud-sdk.tar.gz
-          ./google-cloud-sdk/install.sh --quiet
-          echo "${{ vars.GCLOUD_AUTH }}" > /tmp/gcloud.json
-          echo ${{ secrets.GCLOUD_AUTH}} | base64 -d >  /tmp/gcloud.json
-          printf /tmp/gcloud.json
-          cat /tmp/gcloud.json
-          ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/tmp/gcloud.json
-          ./google-cloud-sdk/bin/gcloud config set project cdtest-406103
+        uses: google-github-actions/setup-gcloud@v0.2.0 # Use official setup action
+        with:
+          project_id: cdtest-406103
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          export_default_credentials: true
 
       - name: Build Docker image
         run: |
@@ -31,15 +26,14 @@ jobs:
 
       - name: Configure Docker and push image
         run: |
-          ./google-cloud-sdk/bin/gcloud auth configure-docker
+          gcloud auth configure-docker --quiet # Use `gcloud` directly, as it's now in PATH
           docker tag nodejs-sample-image gcr.io/cdtest-406103/nodejs-sample-image
           docker push gcr.io/cdtest-406103/nodejs-sample-image
 
       - name: Deploy to Google Cloud Run
         run: |
-          ./google-cloud-sdk/bin/gcloud run deploy nodejs-sample-service \
+          gcloud run deploy nodejs-sample-service \
             --image=gcr.io/cdtest-406103/nodejs-sample-image \
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated
-  
