@@ -3,27 +3,27 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  # Specifies that the action should only run on pushes to the main branch.
+      - main
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest  # Specifies the runner environment.
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3  # Checks out your repository under $GITHUB_WORKSPACE, so your job can access it.
+        uses: actions/checkout@v3
 
       - name: Log in to Google Artifact Registry
         uses: docker/login-action@v1
         with:
-          registry: asia-southeast1-docker.pkg.dev  # Specifies your Artifact Registry location.
+          registry: asia-southeast1-docker.pkg.dev
           username: _json_key
-          password: ${{ secrets.GCLOUD_AUTH }}  # Uses the service account key stored in GitHub secrets.
+          password: ${{ secrets.GCLOUD_AUTH }}
 
       - name: Build and push Docker image to Google Artifact Registry
         uses: docker/build-push-action@v2
         with:
-          context: .  # Specifies the build context.
-          file: ./Dockerfile  # Path to your Dockerfile, adjust if necessary.
+          context: .
+          file: ./Dockerfile
           push: true
-          tags: asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest  # Full path for the image in GAR.
+          tags: asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest
