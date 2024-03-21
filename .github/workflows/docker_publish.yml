@@ -15,8 +15,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t moneymind
-          # Replace 'my-docker-image' with your desired image name
+          docker build -t moneymind .
+          # Replace 'moneymind' with your desired image name
 
       - name: Log in to Docker Hub
         run: |
@@ -24,8 +24,9 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag my-docker-image ${{ secrets.yangyalinicole }}/moneymind:latest
+          docker tag moneymind ${{ secrets.yangyalinicole }}/moneymind:latest
           docker push ${{ secrets.yangyalinicole }}/moneymind:latest
+          # Replace 'moneymind' with your desired image name
 
 secrets:
   DOCKER_USERNAME:
