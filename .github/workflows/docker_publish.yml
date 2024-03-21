@@ -16,7 +16,7 @@ jobs:
         run: docker build -t moneymind:latest .
 
       - name: Log in to Docker Hub
-        run: echo ${{ secrets.NIcole5959__ }} | docker login -u ${{ secrets.yangyalinicole }} --password-stdin
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
       - name: Push Docker image to Docker Hub
         run: |
