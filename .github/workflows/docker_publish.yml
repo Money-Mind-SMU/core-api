@@ -25,4 +25,3 @@ jobs:
         run: |
           docker tag moneymind ${{ secrets.yangyalinicole }}/moneymind:latest
           docker push ${{ secrets.yangyalinicole }}/moneymind:latest
-          # Replace 'moneymind' with your desired image name
