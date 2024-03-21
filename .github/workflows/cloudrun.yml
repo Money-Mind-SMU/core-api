@@ -16,13 +16,13 @@ jobs:
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v0.2.0
         with:
-          project_id: cdtest-406103
+          project_id: skilful-bearing-417410
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
 
       - name: Build Docker image
         run: |
-          docker build -t gcr.io/cdtest-406103/moneymind:latest .
+          docker build -t gcr.io/skilful-bearing-417410/moneymind:latest .
 
       - name: Configure Docker and push image to GCR
         run: |
@@ -32,7 +32,7 @@ jobs:
       - name: Deploy to Google Cloud Run
         run: |
           gcloud run deploy moneymind-service \
-            --image=gcr.io/cdtest-406103/moneymind:latest \
+            --image=gcr.io/skilful-bearing-417410/moneymind:latest \
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated
