@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: core-api/Dockerfile
+          file: Dockerfile
           push: true
           tags: asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/moneymind:latest
           # Replace ./Dockerfile with the path to your Dockerfile if necessary.
