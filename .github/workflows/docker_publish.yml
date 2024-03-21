@@ -15,8 +15,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t moneymind .
-          # Replace 'moneymind' with your desired image name
+          docker build -t moneymind
 
       - name: Log in to Docker Hub
         run: |
@@ -27,9 +26,3 @@ jobs:
           docker tag moneymind ${{ secrets.yangyalinicole }}/moneymind:latest
           docker push ${{ secrets.yangyalinicole }}/moneymind:latest
           # Replace 'moneymind' with your desired image name
-
-secrets:
-  DOCKER_USERNAME:
-    value: yangyalinicole
-  DOCKER_PASSWORD:
-    value: NIcole5959__
