@@ -20,7 +20,7 @@ jobs:
 
       - name: Log in to Docker Hub
         run: |
-          echo ${{ secrets.Da143GMVz8Olh3wmIJYcRGx146UaX+D/WbpfEx3D }} | docker login -u ${{ secrets.yangyalinicole }} --password-stdin
+          echo ${{ secrets.NIcole5959__ }} | docker login -u ${{ secrets.yangyalinicole }} --password-stdin
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -31,4 +31,4 @@ secrets:
   DOCKER_USERNAME:
     value: yangyalinicole
   DOCKER_PASSWORD:
-    value: Da143GMVz8Olh3wmIJYcRGx146UaX+D/WbpfEx3D
+    value: NIcole5959__
