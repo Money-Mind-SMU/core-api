@@ -15,7 +15,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t moneymind
+          docker build -t moneymind .
 
       - name: Log in to Docker Hub
         run: |
