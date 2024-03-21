@@ -1,0 +1,34 @@
+name: Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t moneymind
+          # Replace 'my-docker-image' with your desired image name
+
+      - name: Log in to Docker Hub
+        run: |
+          echo ${{ secrets.Da143GMVz8Olh3wmIJYcRGx146UaX+D/WbpfEx3D }} | docker login -u ${{ secrets.yangyalinicole }} --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag my-docker-image ${{ secrets.yangyalinicole }}/moneymind:latest
+          docker push ${{ secrets.yangyalinicole }}/moneymind:latest
+
+secrets:
+  DOCKER_USERNAME:
+    value: yangyalinicole
+  DOCKER_PASSWORD:
+    value: Da143GMVz8Olh3wmIJYcRGx146UaX+D/WbpfEx3D
