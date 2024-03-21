@@ -11,10 +11,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Updated to v3
+        uses: actions/checkout@v3
 
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0.2.0 # Use official setup action
+        uses: google-github-actions/setup-gcloud@v0.2.0
         with:
           project_id: cdtest-406103
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
@@ -22,18 +22,17 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t nodejs-sample-image .
+          docker build -t gcr.io/cdtest-406103/moneymind:latest .
 
-      - name: Configure Docker and push image
+      - name: Configure Docker and push image to GCR
         run: |
-          gcloud auth configure-docker --quiet # Use `gcloud` directly, as it's now in PATH
-          docker tag nodejs-sample-image gcr.io/cdtest-406103/nodejs-sample-image
-          docker push gcr.io/cdtest-406103/nodejs-sample-image
+          gcloud auth configure-docker --quiet
+          docker push gcr.io/cdtest-406103/moneymind:latest
 
       - name: Deploy to Google Cloud Run
         run: |
-          gcloud run deploy nodejs-sample-service \
-            --image=gcr.io/cdtest-406103/nodejs-sample-image \
+          gcloud run deploy moneymind-service \
+            --image=gcr.io/cdtest-406103/moneymind:latest \
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated
