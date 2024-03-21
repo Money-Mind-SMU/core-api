@@ -27,7 +27,7 @@ jobs:
       - name: Configure Docker and push image to GCR
         run: |
           gcloud auth configure-docker --quiet
-          docker push gcr.io/cdtest-406103/moneymind:latest
+          docker push gcr.io/skilful-bearing-417410/moneymind:latest
 
       - name: Deploy to Google Cloud Run
         run: |
