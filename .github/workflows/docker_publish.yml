@@ -20,5 +20,5 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: |
-          docker tag moneymind:latest <yangyalinicole>/<yangyalinicole/unit_testing>:latest
-          docker push <yangyalinicole>/<yangyalinicole/unit_testing>:latest
+          docker tag moneymind:latest yangyalinicole/unit_testing:latest
+          docker push yangyalinicole/unit_testing:latest
