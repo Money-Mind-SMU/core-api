@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image to GAR
 
 on:
   push:
@@ -14,20 +14,17 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Google Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+        uses: google-github-actions/setup-gcloud@v0.3.0
         with:
           project_id: skilful-bearing-417410
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
 
-      - name: Authenticate Docker with GCR
-        run: |
-          gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-southeast1-docker.pkg.dev
+      - name: Authenticate Docker with Google Artifact Registry
+        run: gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-southeast1-docker.pkg.dev
 
       - name: Build Docker image
-        run: |
-          docker build -t asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/app:latest .
+        run: docker build -t asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest .
 
       - name: Push Docker image to Google Artifact Registry
-        run: |
-          docker push asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/app:latest
+        run: docker push asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest
