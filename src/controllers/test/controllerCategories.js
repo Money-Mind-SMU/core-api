@@ -1,35 +1,40 @@
-// Import necessary modules or classes (replace with your actual imports)
-const ExpenseManager = require('./core-api/src/controllers/test/controllerCategories'); // Replace with your actual module path
+class Category {
+    constructor(name) {
+        this.name = name;
+        this.expenses = [];
+    }
 
-describe('Expense Manager', () => {
-  let expenseManager;
+    addExpense(expenseName, amount) {
+        this.expenses.push({ name: expenseName, amount: amount });
+    }
+}
 
-  beforeEach(() => {
-    // Initialize an instance of ExpenseManager (replace with your actual class)
-    expenseManager = new ExpenseManager();
-  });
+module.exports = Category;
 
-  it('should create a new category successfully', () => {
-    // Test creating a new category with a unique name
-    const category = 'Travel Expenses';
-    const result = expenseManager.createCategory(category);
-    expect(result).toBeTruthy(); // Category creation should succeed
-    expect(expenseManager.getCategories()).toContain(category); // Category should appear in the list
-  });
+// category.test.js (unit tests)
+const Category = require('./category');
 
-  it('should prevent creating a duplicate category', () => {
-    // Test creating a category with an existing name
-    const existingCategory = 'Food Expenses';
-    const result = expenseManager.createCategory(existingCategory);
-    expect(result).toBeFalsy(); // Category creation should fail
-    expect(expenseManager.getCategories()).not.toContain(existingCategory); // Category should not be added
-  });
+describe('Category', () => {
+    let foodCategory;
 
-  it('should reject invalid category names', () => {
-    // Test creating a category with an invalid name
-    const invalidCategory = 'Invalid Category!@#$';
-    const result = expenseManager.createCategory(invalidCategory);
-    expect(result).toBeFalsy(); // Category creation should fail
-    expect(expenseManager.getCategories()).not.toContain(invalidCategory); // Category should not be added
-  });
+    beforeEach(() => {
+        foodCategory = new Category('Food');
+    });
+
+    test('should create a new category with the given name', () => {
+        expect(foodCategory.name).toBe('Food');
+    });
+
+    test('should add an expense to the category', () => {
+        foodCategory.addExpense('Groceries', 100);
+        expect(foodCategory.expenses).toHaveLength(1);
+        expect(foodCategory.expenses[0].name).toBe('Groceries');
+        expect(foodCategory.expenses[0].amount).toBe(100);
+    });
+
+    test('should add multiple expenses to the category', () => {
+        foodCategory.addExpense('Groceries', 100);
+        foodCategory.addExpense('Restaurant', 50);
+        expect(foodCategory.expenses).toHaveLength(2);
+    });
 });
