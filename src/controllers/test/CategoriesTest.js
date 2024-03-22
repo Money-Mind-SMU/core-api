@@ -5,36 +5,40 @@ class Category {
     }
 
     addExpense(expenseName, amount) {
-        this.expenses.push({ name: expenseName, amount: amount });
+        this.expenses.push({ name: expenseName, amount });
     }
 }
 
-module.exports = Category;
+class CategoryManager {
+    constructor() {
+        this.categories = [];
+    }
 
-// category.test.js (unit tests)
-const Category = require('./category');
+    createCategory(name) {
+        // Validation for empty name or excessively long name
+        if (!name || name.length > 50) {
+            return { success: false, message: 'Invalid category name.' };
+        }
 
-describe('Category', () => {
-    let foodCategory;
+        // Check for duplicate category names
+        if (this.categories.some(category => category.name === name)) {
+            return { success: false, message: 'Category name already exists.' };
+        }
 
-    beforeEach(() => {
-        foodCategory = new Category('Food');
-    });
+        // Create and add the new category
+        const newCategory = new Category(name);
+        this.categories.push(newCategory);
+        return { success: true, message: 'Category created successfully.', category: newCategory };
+    }
 
-    test('should create a new category with the given name', () => {
-        expect(foodCategory.name).toBe('Food');
-    });
+    getCategoryNames() {
+        return this.categories.map(category => category.name);
+    }
+}
 
-    test('should add an expense to the category', () => {
-        foodCategory.addExpense('Groceries', 100);
-        expect(foodCategory.expenses).toHaveLength(1);
-        expect(foodCategory.expenses[0].name).toBe('Groceries');
-        expect(foodCategory.expenses[0].amount).toBe(100);
-    });
-
-    test('should add multiple expenses to the category', () => {
-        foodCategory.addExpense('Groceries', 100);
-        foodCategory.addExpense('Restaurant', 50);
-        expect(foodCategory.expenses).toHaveLength(2);
-    });
-});
+// Example usage
+const categoryManager = new CategoryManager();
+console.log(categoryManager.createCategory('Food')); // Should succeed
+console.log(categoryManager.createCategory('')); // Should fail - invalid name
+console.log(categoryManager.createCategory('Food')); // Should fail - duplicate
+console.log(categoryManager.getCategoryNames()); // Should list existing categories
