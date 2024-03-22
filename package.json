@@ -15,6 +15,7 @@
     "google-auth-library": "^9.7.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "node-fetch": "^2.6.1",
     "pg": "^8.11.3",
     "sequelize": "^6.37.1",
     "sinon": "^17.0.1"

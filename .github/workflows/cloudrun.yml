@@ -1,4 +1,4 @@
-name: Deploy to Google Cloud
+name: Build and Push Docker Image to GAR
 
 on:
   push:
@@ -6,62 +6,25 @@ on:
       - main
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Google Cloud SDK
-        run: |
-          curl -o google-cloud-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-372.0.0-linux-x86_64.tar.gz
-          tar -xf google-cloud-sdk.tar.gz
-          ./google-cloud-sdk/install.sh --quiet
-          echo "${{ vars.GCLOUD_AUTH }}" > /tmp/gcloud.json
-          echo ${{ secrets.GCLOUD_AUTH}} | base64 -d >  /tmp/gcloud.json
-          printf /tmp/gcloud.json
-          cat /tmp/gcloud.json
-          ./google-cloud-sdk/bin/gcloud auth activate-service-account --key-file=/tmp/gcloud.json
-          ./google-cloud-sdk/bin/gcloud config set project cdtest-406103
+        uses: google-github-actions/setup-gcloud@v0.3.0
+        with:
+          project_id: skilful-bearing-417410
+          service_account_key: ${{ secrets.GCLOUD_AUTH }}
+          export_default_credentials: true
+
+      - name: Configure Docker to use the gcloud command-line tool as a credential helper
+        run: gcloud auth configure-docker
 
       - name: Build Docker image
-        run: |
-          docker build -t nodejs-sample-image .
+        run: docker build -t gcr.io/skilful-bearing-417410/moneymind/unit_testing:latest .
 
-      - name: Configure Docker and push image
-        run: |
-          ./google-cloud-sdk/bin/gcloud auth configure-docker
-          docker tag nodejs-sample-image gcr.io/cdtest-406103/nodejs-sample-image
-          docker push gcr.io/cdtest-406103/nodejs-sample-image
-
-      - name: Deploy to Google Cloud Run
-        run: |
-          ./google-cloud-sdk/bin/gcloud run deploy nodejs-sample-service \
-            --image=gcr.io/cdtest-406103/nodejs-sample-image \
-            --platform=managed \
-            --region=us-central1 \
-            --allow-unauthenticated
-  jobs:
-    gc-cloud_run:
-        name: 'cloud_run'
-        runs-on: ubuntu-latest
-
-        permissions:
-            contents: 'read'
-            deployments: 'write'
-            id-token: 'write'
-
-        steps:
-            - uses: 'actions/checkout@v3'
-
-            - id: 'auth'
-              name: 'Gcloud Auth'
-              uses: 'google-github-actions/auth@v1'
-              with:
-                credentials_json: '${{secrets.GCLOUD_AUTH}}'
-  
-            #you can replace "us-central1" with your preferred region
-            - run: |-
-                gcloud run deploy <service name> --platform managed --source <path to deployment dir> --region us-central1; 
-                
+      - name: Push Docker image to Google Container Registry
+        run: docker push gcr.io/skilful-bearing-417410/moneymind/unit_testing:latest

@@ -1,0 +1,24 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Or any branch you want to trigger the workflow
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t moneymind:latest .
+
+      - name: Log in to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          docker tag moneymind:latest yangyalinicole/unit_testing:latest
+          docker push yangyalinicole/unit_testing:latest
