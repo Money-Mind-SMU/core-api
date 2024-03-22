@@ -1,4 +1,4 @@
-const { CategoryManager } = require('./path-to-your-category-manager-file');
+const { CategoryManager } = require('./src/controllers/controllerCategories');
 
 describe('CategoryManager', () => {
     let categoryManager;
