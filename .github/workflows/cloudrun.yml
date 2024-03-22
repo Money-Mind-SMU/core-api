@@ -20,11 +20,11 @@ jobs:
           service_account_key: ${{ secrets.GCLOUD_AUTH }}
           export_default_credentials: true
 
-      - name: Authenticate Docker with Google Artifact Registry
-        run: gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-southeast1-docker.pkg.dev
+      - name: Configure Docker to use the gcloud command-line tool as a credential helper
+        run: gcloud auth configure-docker
 
       - name: Build Docker image
-        run: docker build -t asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest .
+        run: docker build -t gcr.io/skilful-bearing-417410/moneymind/unit_testing:latest .
 
-      - name: Push Docker image to Google Artifact Registry
-        run: docker push asia-southeast1-docker.pkg.dev/skilful-bearing-417410/moneymind/unit_testing:latest
+      - name: Push Docker image to Google Container Registry
+        run: docker push gcr.io/skilful-bearing-417410/moneymind/unit_testing:latest
