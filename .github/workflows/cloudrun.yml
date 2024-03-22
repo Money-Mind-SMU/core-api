@@ -42,4 +42,26 @@ jobs:
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated
+  jobs:
+    gc-cloud_run:
+        name: 'cloud_run'
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: 'read'
+            deployments: 'write'
+            id-token: 'write'
+
+        steps:
+            - uses: 'actions/checkout@v3'
+
+            - id: 'auth'
+              name: 'Gcloud Auth'
+              uses: 'google-github-actions/auth@v1'
+              with:
+                credentials_json: '${{secrets.GCLOUD_AUTH}}'
   
+            #you can replace "us-central1" with your preferred region
+            - run: |-
+                gcloud run deploy <service name> --platform managed --source <path to deployment dir> --region us-central1; 
+                

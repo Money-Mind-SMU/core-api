@@ -1,5 +1,4 @@
 const express = require('express');
-const pet = require('./pet');
 const categories = require('./categories');
 const users = require('./users')
 

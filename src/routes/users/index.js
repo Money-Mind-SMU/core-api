@@ -3,11 +3,12 @@ const router = express.Router();
 const Controller = require('../../controllers/controllerUser')
 const {authentication} = require('../../middleware/auth')
 
-router.get('/', (req, res) => {
-  res.send('User');
-});
 
-router.post('/login',Controller.login)
+// router.post('login-facebook',Controller.loginFacebook)
+// router.post('login-google',Controller.loginGoogle)
+// router.get('/users/profile', authentication, Controller.getUsersProfile)
+// router.get('/users/last-active', authentication, Controller.getLastActive)
+// router.post('/transactions/', authentication, Controller.insertTransactions)
 
 
 module.exports = router;
