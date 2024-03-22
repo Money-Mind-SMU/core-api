@@ -1,44 +1,35 @@
-class Category {
-    constructor(name) {
-        this.name = name;
-        this.expenses = [];
-    }
+const { CategoryManager } = require('./path-to-your-category-manager-file');
 
-    addExpense(expenseName, amount) {
-        this.expenses.push({ name: expenseName, amount });
-    }
-}
+describe('CategoryManager', () => {
+    let categoryManager;
 
-class CategoryManager {
-    constructor() {
-        this.categories = [];
-    }
+    beforeEach(() => {
+        categoryManager = new CategoryManager();
+    });
 
-    createCategory(name) {
-        // Validation for empty name or excessively long name
-        if (!name || name.length > 50) {
-            return { success: false, message: 'Invalid category name.' };
-        }
+    it('should successfully create a new category and display a success message', () => {
+        const result = categoryManager.createCategory('Food');
+        expect(result).toEqual({ success: true, message: 'Category created successfully.', category: expect.any(Object) });
+        expect(categoryManager.getCategoryNames()).toContain('Food');
+    });
 
-        // Check for duplicate category names
-        if (this.categories.some(category => category.name === name)) {
-            return { success: false, message: 'Category name already exists.' };
-        }
+    it('should prevent creation of a duplicate category and display an error message', () => {
+        categoryManager.createCategory('Travel');
+        const result = categoryManager.createCategory('Travel');
+        expect(result).toEqual({ success: false, message: 'Category name already exists.' });
+    });
 
-        // Create and add the new category
-        const newCategory = new Category(name);
-        this.categories.push(newCategory);
-        return { success: true, message: 'Category created successfully.', category: newCategory };
-    }
+    it('should reject invalid category names and display an error message', () => {
+        const cases = ['', ' ', 'a'.repeat(51)];
+        cases.forEach(name => {
+            const result = categoryManager.createCategory(name);
+            expect(result).toEqual({ success: false, message: 'Invalid category name.' });
+        });
+    });
 
-    getCategoryNames() {
-        return this.categories.map(category => category.name);
-    }
-}
-
-// Example usage
-const categoryManager = new CategoryManager();
-console.log(categoryManager.createCategory('Food')); // Should succeed
-console.log(categoryManager.createCategory('')); // Should fail - invalid name
-console.log(categoryManager.createCategory('Food')); // Should fail - duplicate
-console.log(categoryManager.getCategoryNames()); // Should list existing categories
+    it('should show the new category in the list of existing categories after creation', () => {
+        categoryManager.createCategory('Entertainment');
+        const categoryNames = categoryManager.getCategoryNames();
+        expect(categoryNames).toContain('Entertainment');
+    });
+});
