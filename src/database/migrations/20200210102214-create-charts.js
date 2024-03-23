@@ -1,30 +1,31 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('PetCommunities', {
-      id: {
+    return queryInterface.createTable('mm_charts', {
+      chart_id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      PetId: {
+      user_id: {
         type: Sequelize.INTEGER
       },
-      CommunityId: {
+      category_id: {
         type: Sequelize.INTEGER
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+      month: {
+        type: Sequelize.INTEGER
       },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      }
+      year: {
+        type: Sequelize.INTEGER
+      },
+      total_amount: {
+        type: Sequelize.DOUBLE
+      },
     });
   },
   down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('PetCommunities');
+    return queryInterface.dropTable('mm_charts');
   }
 };
