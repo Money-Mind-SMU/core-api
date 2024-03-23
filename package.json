@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha src/controllers/test"
+    "test": "mocha src/controllers/test",
+    "start": "node src/app"
   },
   "keywords": [],
   "author": "",

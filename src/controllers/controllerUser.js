@@ -2,7 +2,7 @@ const jwt = require('../helpers/jwt')
 const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const {
-    User,
+    Users,
   } = require('../database/models');
 
 class controllerUser{    
@@ -17,7 +17,8 @@ class controllerUser{
             }
         
             // Update user profile in the database
-            const updatedUser = await User.update({ name }, { where: { id: userId } });
+            const updatedUser = await Users.update({ name }, { where: { id: userId } });
+        
         
             // Check if the user was found and updated
             if (updatedUser[0] === 0) {
@@ -41,13 +42,13 @@ class controllerUser{
      const payload = ticket.getPayload();
 
      // find existing user in database
-     let existingUser = await User.findOne({
+     let existingUser = await Users.findOne({
         user_email : payload.email
       })
 
       if (!existingUser) {
         // if new user sign up
-        await User.create({
+        await Users.create({
           user_name: payload.name,
           user_email: payload.email,
        })

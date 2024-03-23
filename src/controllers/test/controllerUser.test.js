@@ -1,6 +1,6 @@
 const assert = require('assert');
 const sinon = require('sinon');
-const { User } = require('../../database/models');
+const { Users } = require('../../database/models');
 const jwt = require('../../helpers/jwt');
 const controllerUser = require('../controllerUser');
 
@@ -23,7 +23,7 @@ describe('Update Profile API', () => {
     };
 
     // Mocking Sequelize's update method
-    sinon.stub(User, 'update').resolves([1]);
+    sinon.stub(Users, 'update').resolves([1]);
 
     await controllerUser.updatedProfile(req, res);
 
@@ -71,7 +71,7 @@ describe('Update Profile API', () => {
     };
 
     // Mocking Sequelize's update method to return 0
-    sinon.stub(User, 'update').resolves([0]);
+    sinon.stub(Users, 'update').resolves([0]);
 
     await controllerUser.updatedProfile(req, res);
 

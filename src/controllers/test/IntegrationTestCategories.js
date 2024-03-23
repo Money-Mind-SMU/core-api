@@ -1,4 +1,4 @@
-const { expect } = require('chai');
+const assert = require('assert');
 const { Category, CategoryManager } = require('../controllerCategories');
 
 describe('CategoryManager Integration', () => {
@@ -11,22 +11,22 @@ describe('CategoryManager Integration', () => {
     it('should create a category and add an expense to it', () => {
         // Create a new category
         const createResponse = categoryManager.createCategory('Groceries');
-        expect(createResponse.success).to.be.true;
-        expect(createResponse.message).to.equal('Category created successfully.');
+        assert.strictEqual(createResponse.success, true);
+        assert.strictEqual(createResponse.message, 'Category created successfully.');
         
         // Add an expense to the new category
         const category = createResponse.category;
         category.addExpense('Apples', 5);
 
         // Retrieve the added expense to verify it
-        expect(category.expenses).to.deep.include({ name: 'Apples', amount: 5 });
+        assert.deepStrictEqual(category.expenses, [{ name: 'Apples', amount: 5 }]);
     });
 
     it('should not create a category with invalid name', () => {
         // Attempt to create a category with an invalid name
         const response = categoryManager.createCategory('This Is A Very Very Very Very Long Category Name That Is Invalid');
-        expect(response.success).to.be.false;
-        expect(response.message).to.equal('Invalid category name.');
+        assert.strictEqual(response.success, false);
+        assert.strictEqual(response.message, 'Invalid category name.');
     });
 
     it('should not create duplicate categories', () => {
@@ -34,8 +34,8 @@ describe('CategoryManager Integration', () => {
         categoryManager.createCategory('Utilities');
         // Attempt to create a duplicate category
         const response = categoryManager.createCategory('Utilities');
-        expect(response.success).to.be.false;
-        expect(response.message).to.equal('Category name already exists.');
+        assert.strictEqual(response.success, false);
+        assert.strictEqual(response.message, 'Category name already exists.');
     });
 
     it('should list all category names', () => {
@@ -45,6 +45,6 @@ describe('CategoryManager Integration', () => {
 
         // Verify that all category names are listed
         const categoryNames = categoryManager.getCategoryNames();
-        expect(categoryNames).to.have.members(['Rent', 'Utilities']);
+        assert.deepStrictEqual(categoryNames, ['Rent', 'Utilities']);
     });
 });
