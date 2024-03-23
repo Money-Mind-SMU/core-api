@@ -1,32 +1,50 @@
-describe('CategoryManager', () => {
-    it('should allow creation of a new category and use it for a new income entry', () => {
-        // Navigate to the category management section
-        cy.visit('/settings/categories');
+const { expect } = require('chai');
+const { Category, CategoryManager } = require('../controllerCategories');
 
-        // Click on the option to add a new category
-        cy.get('#add-category-button').click();
+describe('CategoryManager Integration', () => {
+    let categoryManager;
 
-        // Enter the new category name and select the type
-        cy.get('#category-name-input').type('Freelance Income');
-        cy.get('#category-type-select').select('Income');
+    beforeEach(() => {
+        categoryManager = new CategoryManager();
+    });
 
-        // Submit the form to create the new category
-        cy.get('#submit-category-button').click();
+    it('should create a category and add an expense to it', () => {
+        // Create a new category
+        const createResponse = categoryManager.createCategory('Groceries');
+        expect(createResponse.success).to.be.true;
+        expect(createResponse.message).to.equal('Category created successfully.');
+        
+        // Add an expense to the new category
+        const category = createResponse.category;
+        category.addExpense('Apples', 5);
 
-        // Navigate to the income management section
-        cy.visit('/income');
+        // Retrieve the added expense to verify it
+        expect(category.expenses).to.deep.include({ name: 'Apples', amount: 5 });
+    });
 
-        // Attempt to add a new income entry
-        cy.get('#add-income-button').click();
+    it('should not create a category with invalid name', () => {
+        // Attempt to create a category with an invalid name
+        const response = categoryManager.createCategory('This Is A Very Very Very Very Long Category Name That Is Invalid');
+        expect(response.success).to.be.false;
+        expect(response.message).to.equal('Invalid category name.');
+    });
 
-        // Verify that "Freelance Income" is an available option and select it
-        cy.get('#category-select').should('contain', 'Freelance Income').select('Freelance Income');
+    it('should not create duplicate categories', () => {
+        // Create a category
+        categoryManager.createCategory('Utilities');
+        // Attempt to create a duplicate category
+        const response = categoryManager.createCategory('Utilities');
+        expect(response.success).to.be.false;
+        expect(response.message).to.equal('Category name already exists.');
+    });
 
-        // Fill in the rest of the required details for the income entry
-        cy.get('#income-amount-input').type('5000');
-        cy.get('#income-date-input').type('2022-01-01');
+    it('should list all category names', () => {
+        // Create multiple categories
+        categoryManager.createCategory('Rent');
+        categoryManager.createCategory('Utilities');
 
-        // Submit the income entry
-        cy.get('#submit-income-button').click();
+        // Verify that all category names are listed
+        const categoryNames = categoryManager.getCategoryNames();
+        expect(categoryNames).to.have.members(['Rent', 'Utilities']);
     });
 });
